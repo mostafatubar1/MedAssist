@@ -1,0 +1,53 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-medassist}
+      POSTGRES_USER: ${POSTGRES_USER:-medassist}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-medassist}
+    ports:
+      - "5432:5432"
+    volumes:
+      - medassist_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-medassist} -d ${POSTGRES_DB:-medassist}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile.dev
+    environment:
+      DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-medassist}:${POSTGRES_PASSWORD:-medassist}@db:5432/${POSTGRES_DB:-medassist}
+      JWT_SECRET: ${JWT_SECRET:-development-only-change-me}
+      JWT_ALGORITHM: ${JWT_ALGORITHM:-HS256}
+      JWT_EXPIRE_MINUTES: ${JWT_EXPIRE_MINUTES:-120}
+      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:5173}
+    volumes:
+      - ./backend:/app/backend
+      - ./shared:/app/shared
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile.dev
+    environment:
+      VITE_API_BASE_URL: ${VITE_API_BASE_URL:-http://localhost:8000}
+    volumes:
+      - ./frontend:/app/frontend
+      - ./shared:/app/shared
+      - /app/frontend/node_modules
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend
+
+volumes:
+  medassist_pgdata:

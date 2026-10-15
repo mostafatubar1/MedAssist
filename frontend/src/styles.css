@@ -1,0 +1,13 @@
+:root { font-family: Inter, system-ui, sans-serif; color: #14213d; background: #f7f9fc; }
+body { margin: 0; }
+a { color: #155eef; }
+button, input, select { font: inherit; }
+.page { max-width: 900px; margin: 0 auto; padding: 2rem; }
+.panel { background: white; border: 1px solid #d9e0ea; border-radius: 12px; padding: 1.25rem; }
+.form { display: grid; gap: .8rem; max-width: 430px; }
+.form input, .form select { padding: .7rem; border: 1px solid #b8c2d1; border-radius: 8px; }
+.form button { padding: .7rem 1rem; border: 0; border-radius: 8px; cursor: pointer; }
+.cards { display: flex; flex-wrap: wrap; gap: .75rem; }
+.cards a { background: white; border: 1px solid #d9e0ea; padding: .9rem; border-radius: 10px; text-decoration: none; }
+.muted { color: #5d6675; }
+.error { color: #a61b1b; }

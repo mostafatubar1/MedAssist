@@ -1,0 +1,24 @@
+name: Deploy (placeholder)
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    if: ${{ false }} # Remove after registry/host is chosen and secrets are configured.
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build production images
+        run: |
+          docker build -f deploy/backend.Dockerfile -t medassist-backend:${{ github.sha }} .
+          docker build -f deploy/frontend.Dockerfile -t medassist-frontend:${{ github.sha }} .
+      - name: Push and deploy
+        run: |
+          echo "TODO: authenticate to registry"
+          echo "TODO: push images"
+          echo "TODO: deploy to selected host/platform"
